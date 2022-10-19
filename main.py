@@ -17,13 +17,17 @@ driver.find_element("id", 'login_login').click()
 
 url="https://www.bolha.com/moja-bolha/uporabnik/moji-oglasi/aktivni-oglasi"
 driver.get(url)
-x = driver.find_element(By.CLASS_NAME, "UserEntityList-itemList")
+x = driver.find_elements(By.CLASS_NAME, "UserEntityActions-action.TooltipWrap")
+links=[]
 for a in x:
-    print(a)
+    #a.click()
+    links.append(a.get_attribute("href"))
+driver.get(str(links[0]))
+
 
 #elements=driver.find_elements(By.TAG_NAME, "li")
 
     #.get_attribute("href")
 #driver.find_element("class", 'ClassifiedDetailDescription-textWrapper').click()
 
-driver.close()
+#driver.close()
