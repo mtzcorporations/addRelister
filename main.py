@@ -83,6 +83,26 @@ if dolKat > 1:
                 if el.text == kategorija[3]:
                     el.click()
 driver.find_element(By.CLASS_NAME,"form-action.form-action--submit.button-standard.button-standard--alpha.SubmitCategorySelector-submit").click()
+#izpolnjevanje forme oglasa
+driver.find_element("id", 'ad-title').send_keys(Naslov)
+driver.find_element("id", 'ad-description').send_keys(Vsebina)
+select = Select(driver.find_element("id", 'ad-condition_id'))
+select.select_by_value(Stanje)
+driver.find_element("id", 'ad-price-amount').clear()
+driver.find_element("id", 'ad-price-amount').send_keys(Cena)
+
+element=driver.find_element("id", 'adLocalitySelector-location_id_level_0')
+element.click()
+select = Select(element)
+select.select_by_value(Lokacija_1)
+element=driver.find_element("id", 'adLocalitySelector-location_id_level_1')
+element.click()
+select = Select(element)
+select.select_by_value(Lokacija_2)
+element=driver.find_element("id", 'adLocalitySelector-location_id_level_2')
+element.click()
+select = Select(element)
+select.select_by_value(Lokacija_3)
 
 #driver.find_element("id", "submitCategorySelectorLevelCategory3").click()
 #Select(driver.find_element(By.XPATH, "//*[contains(text(), 'Računalništvo')]"))
