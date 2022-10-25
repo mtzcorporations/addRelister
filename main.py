@@ -10,7 +10,31 @@ def formattTExt(Kat,Naslov, Cena, OpisOglasa, stanje,lokacija1,lokacija2,lokacij
     formatted+= "\n--END--\n" + stanje + "\n--END--\n" + lokacija1 +"\n" + lokacija2 +"\n" + lokacija3
     with open('oglas.txt', 'w', encoding="utf-8") as f:
         f.write(formatted)
+def preberiPrikljucke(driver):
+    DVI = driver.find_element("id", 'ad-connectorType_DVI').get_property("checked")
+    DP = driver.find_element("id", 'ad-connectorType_DisplayPort').get_property("checked")
+    HDMI = driver.find_element("id", 'ad-connectorType_HDMI').get_property("checked")
+    SCART = driver.find_element("id", 'ad-connectorType_SCART').get_property("checked")
+    USB = driver.find_element("id", 'ad-connectorType_USB').get_property("checked")
+    THU = driver.find_element("id", 'ad-connectorType_Thunderbolt').get_property("checked")
+    VGA = driver.find_element("id", 'ad-connectorType_VGA (D-sub)').get_property("checked")
 
+    return DVI,DP,HDMI,SCART,USB,THU,VGA
+def izberiPrikljucke(driver,DVI, DP, HDMI, SCART, USB, THU, VGA):
+    if DVI:
+        driver.find_element("id", 'ad-connectorType_DVI').click()
+    if DP:
+        driver.find_element("id", 'ad-connectorType_DisplayPort').click()
+    if HDMI:
+        driver.find_element("id", 'ad-connectorType_HDMI').click()
+    if SCART:
+        driver.find_element("id", 'ad-connectorType_SCART').click()
+    if USB:
+        driver.find_element("id", 'ad-connectorType_USB').click()
+    if THU:
+        driver.find_element("id", 'ad-connectorType_Thunderbolt').click()
+    if VGA:
+        driver.find_element("id", 'ad-connectorType_VGA (D-sub)').click()
 
 driver = webdriver.Chrome('chromedriver')
 # then make a url variable
@@ -20,7 +44,7 @@ url = "https://www.bolha.com/prijava/"
 driver.get(url)
 
 loginName = driver.find_element("id", 'login_username')
-loginName.send_keys("kozarec18")
+loginName.send_keys("jan2012")
 loginPass = driver.find_element("id", 'login_password')
 loginPass.send_keys("Majn1ce2")
 driver.find_element("id", 'didomi-notice-agree-button').click()
@@ -35,7 +59,6 @@ for i,a in enumerate(x):
     if(i%3==0):
         links.append(a.get_attribute("href"))
 for i in range(0,len(links)):
-    print()
     driver.get(str(links[i]))
 
     Naslov = driver.find_element("id", 'ad-title')
@@ -59,6 +82,21 @@ for i in range(0,len(links)):
     kategorija = driver.find_element(By.CLASS_NAME, "edit-category").text
     kategorija=kategorija.split("\n")
     dolKat=len(kategorija)
+
+    if dolKat>2 and kategorija[1]=="Monitorji":
+        diagonala=driver.find_element("id", "ad-screenSize")
+        diagonala = diagonala.get_property("value")
+        proizvajalec = driver.find_element("id", "ad-manufacturer")
+        proizvajalec = proizvajalec.get_property("value")
+        resolucija = driver.find_element("id", "ad-screenResolution")
+        resolucija = resolucija.get_property("value")
+        vrstaZas = driver.find_element("id", "ad-screenPanel")
+        vrstaZas = vrstaZas.get_property("value")
+        formatZas = driver.find_element("id", "ad-screenFormat")
+        formatZas = formatZas.get_property("value")
+        DVI, DP, HDMI, SCART, USB, THU, VGA = preberiPrikljucke(driver)
+
+
     # slike=driver.find_element(By.CLASS_NAME, "Uploader-fileList")
     # slike=slike.find_elements(By.TAG_NAME,"src")
     # for s in slike:
@@ -114,13 +152,22 @@ for i in range(0,len(links)):
     select = Select(element)
     select.select_by_value(Lokacija_3)
 
+    if dolKat > 2 and kategorija[1] == "Monitorji":
+        driver.find_element("id", "ad-screenSize").send_keys(diagonala)
+        driver.find_element("id", "ad-manufacturer").send_keys(proizvajalec)
+        driver.find_element("id", "ad-screenResolution").send_keys(resolucija)
+        driver.find_element("id", "ad-screenPanel").send_keys(vrstaZas)
+        driver.find_element("id", "ad-screenFormat").send_keys(formatZas)
+        izberiPrikljucke(driver,DVI, DP, HDMI, SCART, USB, THU, VGA)
 
+    print(Naslov)
     files=fileUploader().listFilesForName(Naslov)
     for k in files:
         print(k)
         driver.find_element("id", 'item_file_10').send_keys(k)
         time.sleep(1)
     print("done")
+    driver.find_element("id", "ad-submitButton").click()
 #driver.find_element(By.XPATH, "//*[contains(text(), 'Izberite fotografije')]").click()
 
 #driver.find_element("id", "submitCategorySelectorLevelCategory3").click()
