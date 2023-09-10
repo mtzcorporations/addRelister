@@ -5,6 +5,11 @@ from selenium.webdriver.support.ui import Select
 import os
 import time
 from fileUploader import fileUploader
+names=["kozarec18","jan2012"]
+
+st=4
+
+name=names[0]
 def formattTExt(Kat,Naslov, Cena, OpisOglasa, stanje,lokacija1,lokacija2,lokacija3): #formatiranje texta za shranjevanje
     formatted=Kat+ "--END--\n" + Naslov + "\n--END--\n"  + Cena + "\n--END--\n" + OpisOglasa
     formatted+= "\n--END--\n" + stanje + "\n--END--\n" + lokacija1 +"\n" + lokacija2 +"\n" + lokacija3
@@ -42,12 +47,14 @@ url = "https://www.bolha.com/prijava/"
 
 # then call the default open method described above
 driver.get(url)
+time.sleep(2)
+driver.find_element("id", 'didomi-notice-agree-button').click()
 
 loginName = driver.find_element("id", 'login_username')
-loginName.send_keys("jan2012")
+loginName.send_keys(name)
 loginPass = driver.find_element("id", 'login_password')
 loginPass.send_keys("Majn1ce2")
-driver.find_element("id", 'didomi-notice-agree-button').click()
+
 driver.find_element("id", 'login_login').click()
 
 url="https://www.bolha.com/moja-bolha/uporabnik/moji-oglasi/aktivni-oglasi"
@@ -58,7 +65,7 @@ for i,a in enumerate(x):
     #a.click()
     if(i%3==0):
         links.append(a.get_attribute("href"))
-for i in range(0,len(links)):
+for i in range(st,len(links)):
     driver.get(str(links[i]))
 
     Naslov = driver.find_element("id", 'ad-title')
@@ -145,12 +152,16 @@ for i in range(0,len(links)):
     select.select_by_value(Lokacija_1)
     element=driver.find_element("id", 'adLocalitySelector-location_id_level_1')
     element.click()
+    time.sleep(1)
     select = Select(element)
     select.select_by_value(Lokacija_2)
     element=driver.find_element("id", 'adLocalitySelector-location_id_level_2')
     element.click()
+    time.sleep(1)
     select = Select(element)
     select.select_by_value(Lokacija_3)
+    element=driver.find_element("id","ad-onlinePaymentSelector-isOnlinePaymentEnabled_1")
+    element.click()
 
     if dolKat > 2 and kategorija[1] == "Monitorji":
         driver.find_element("id", "ad-screenSize").send_keys(diagonala)
@@ -166,12 +177,9 @@ for i in range(0,len(links)):
         print(k)
         driver.find_element("id", 'item_file_10').send_keys(k)
         time.sleep(1)
-    print("done")
+    #time.sleep(10000)
     driver.find_element("id", "ad-submitButton").click()
-#driver.find_element(By.XPATH, "//*[contains(text(), 'Izberite fotografije')]").click()
+    time.sleep(1)
+    print("done")
 
-#driver.find_element("id", "submitCategorySelectorLevelCategory3").click()
-#Select(driver.find_element(By.XPATH, "//*[contains(text(), 'Računalništvo')]"))
-#razred.click()
-#driver.find_elements_by_xpath()
 #driver.close()
